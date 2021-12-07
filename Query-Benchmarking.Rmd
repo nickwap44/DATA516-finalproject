@@ -1,0 +1,68 @@
+---
+title: "DATA516 Project"
+author: "Nick Wapstra"
+date: "11/24/2021"
+output: html_document
+---
+
+Read in the data.
+```{r Read Benchmarking Data}
+df <- read.csv("query_benchmarking.csv")
+```
+
+Generate summary statistics for joins.
+```{r Joins Summary}
+mean(df$Joins)
+sd(df$Joins)
+max(df$Joins)
+min(df$Joins)
+```
+
+Generate summary statistics for Redshift.
+```{r Redshift Summary}
+mean(df$Redshift)
+sd(df$Redshift)
+max(df$Redshift)
+min(df$Redshift)
+```
+
+Generate summary statistics for Snowflake.
+```{r Snowflake Summary}
+mean(df$Snowflake)
+sd(df$Snowflake)
+max(df$Snowflake)
+min(df$Snowflake)
+```
+
+T-test for runtimes.
+```{r T-test for runtimes}
+t.test(df$Redshift,df$Snowflake,paired=TRUE)
+```
+
+Plot the runtime by the number of joins for each system.
+```{r Plot Runtime}
+library(ggplot2)
+df_toplot <- read.csv("query_benchmarking_long.csv")
+df_toplot$Joins <- as.factor(df_toplot$Joins)
+df_toplot$System <- as.factor(df_toplot$System)
+plot <- ggplot(data=df_toplot,aes(x=Joins, y=log(Time), fill=System)) + geom_boxplot() + ylab("Log Time (ms)") + ggtitle("Log Runtime for Each System by Number of Joins")
+plot + theme(plot.title = element_text(face="bold",hjust=0.5))
+```
+
+Summary statistics for Snowflake cluster sizes.
+Generate summary statistics for Snowflake.
+```{r Snowflake Size Summary}
+df_snowflake <- read.csv("query_benchmarking_snowflake.csv")
+mean(df_snowflake$Time[df_snowflake$Size=='Small'])
+sd(df_snowflake$Time[df_snowflake$Size=='Small'])
+max(df_snowflake$Time[df_snowflake$Size=='Small'])
+min(df_snowflake$Time[df_snowflake$Size=='Small'])
+mean(df_snowflake$Time[df_snowflake$Size=='Medium'])
+sd(df_snowflake$Time[df_snowflake$Size=='Medium'])
+max(df_snowflake$Time[df_snowflake$Size=='Medium'])
+min(df_snowflake$Time[df_snowflake$Size=='Medium'])
+mean(df_snowflake$Time[df_snowflake$Size=='Large'])
+sd(df_snowflake$Time[df_snowflake$Size=='Large'])
+max(df_snowflake$Time[df_snowflake$Size=='Large'])
+min(df_snowflake$Time[df_snowflake$Size=='Large'])
+```
